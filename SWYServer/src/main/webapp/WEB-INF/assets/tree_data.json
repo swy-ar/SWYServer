@@ -1,0 +1,53 @@
+[
+  {
+    "id":1,
+    "text":"商家管理",
+    "children":[
+      {
+        "text":"商家列表",
+        "href": "../seller/list"
+      }
+    ],
+    "state":"open"
+  },{
+    "id":2,
+    "text":"模型管理",
+    "children":[
+      {
+        "text": "模型列表",
+        "href": "../seller/page_model_list"
+      }
+    ],
+    "state":"open"
+  },{
+    "id":3,
+    "text":"分类管理",
+    "children":[
+      {
+        "text": "分类列表",
+        "href": "../seller/type_list"
+      }
+    ],
+    "state":"open"
+  },{
+    "id":4,
+    "text": "品牌管理",
+    "children":[
+      {
+        "text": "品牌列表",
+        "href": "../seller/brand_list"
+      }
+    ],
+    "state":"open"
+  },{
+    "id":5,
+    "text":"分享案例管理",
+    "children":[
+      {
+        "text": "案例列表",
+        "href": "../seller/example_manager"
+      }
+    ],
+    "state":"open"
+  }
+]

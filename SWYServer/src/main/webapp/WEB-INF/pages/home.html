@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Server</title>
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/demo/demo.css">
+    <script type="text/javascript" src="../assets/jquery-easyui-1.5.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/jquery-easyui-1.5.4.2/jquery.easyui.min.js"></script>
+</head>
+<body>
+<div id="cc" style="width:100%;height:600px;">
+    <div data-options="region:'north'" style="height:60px">
+        <div class="easyui-panell">
+            <div style="font-size:18px;font-family:'Arial Rounded MT Bold';line-height:58px;">后台管理系统</div>
+            <div style="margin-top:-40px;float:right;">当前时间:<span id="clock"></span></div>
+        </div>
+    </div>
+    <div data-options="region:'west',split:true" title="系统菜单" style="width:180px;">
+        <div class="easyui-panel">
+            <ul class="easyui-tree" id="home-menu"></ul>
+        </div>
+    </div>
+    <div data-options="region:'center'">
+        <div class="easyui-tabs" fit="true" border="false" id="tabs">
+            <div title="首页"><p style="font-size:18px;margin-left:20px;">欢迎来到三维云系统管理后台</p></div>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+        $('#home-menu').tree({
+            method: 'get',
+            url: '../assets/tree_data.json',
+            onClick:function(node) { //单击事件
+                $(this).tree('toggle', node.target);
+                if (node.href) {
+                    let text = node.text;
+                    if ($("#tabs").tabs('exists', text)) {
+                        $('#tabs').tabs('select', text);
+                    } else {
+                        let pageUrl = node.href;
+                        let content = '<iframe scrolling="yes" frameborder="0" src="' + pageUrl + '" style="width:100%;height:98%;"></iframe>';
+                        $('#tabs').tabs('add', {
+                            title : text,
+                            closable : true,
+                            content : content,
+                            onLoad:function() {
+                                console.log("[" + pageUrl + "]" + 'loaded successfully');
+                            }
+                        });
+                    }
+                }
+            }  
+        });
+
+        function showtime()
+        {
+            var now_time = new Date();//创建时间对象的实例
+            var year = now_time.getFullYear();
+            var month = now_time.getMonth();
+            var day = now_time.getDate();
+            var hours = now_time.getHours();//获得当前小时数
+            var minutes = now_time.getMinutes();//获得当前分钟数
+            var seconds = now_time.getSeconds();//获得当前秒数
+            var timer = "" + year + "-" + (month<10?("0"+month):month) + "-" + (day<10?("0"+day):day) + " ";
+            var hoursString = "" + hours;
+            if (hours < 10) {
+                hoursString = "0" + hours;
+            }
+            timer += hoursString + ":"; //将小时数值赋予变量 timer
+            var minutesString = "" + minutes;
+            if (minutes < 10) {
+                minutesString = "0" + minutes;
+            }
+            timer += minutesString + ":"; //将分钟数值赋予变量 timer
+            var secondsString = "" + seconds;
+            if (seconds < 10) {
+                secondsString = "0" + seconds;
+            }
+            timer += secondsString; //将秒数值赋予变量 timer
+            document.getElementById("clock").innerHTML = timer;
+            //每隔一秒自动调用一次showtime()函数
+            setTimeout("showtime()", 1000);
+        }
+
+        function setHeight() {
+//            var c = $('#cc');
+//            var p = c.layout('panel','center');	// get the center panel
+//            var oldHeight = p.panel('panel').outerHeight();
+//            alert(oldHeight);
+//            p.panel('resize', {height:'auto'});
+//            var newHeight = p.panel('panel').outerHeight();
+//            alert(newHeight);
+//            c.layout('resize', {
+//                height: (c.height() + newHeight - oldHeight)
+//            });
+            var docHeight = $(document).innerHeight();
+            var c = $('#cc');
+            c.layout('resize', {
+                height: docHeight - 40
+            });
+        }
+
+        $(function() {
+            $('#cc').layout();
+
+            setHeight();
+
+            showtime();
+        });
+    </script>
+</body>
+</html>

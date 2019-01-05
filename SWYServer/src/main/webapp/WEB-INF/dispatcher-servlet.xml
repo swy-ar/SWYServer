@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/task
+           http://www.springframework.org/schema/task/spring-task.xsd"
+       default-lazy-init="true">
+
+    <!-- 配置数据库配置文件位置 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:datasource.properties</value>
+        </property>
+        <property name="systemPropertiesMode">
+            <value>2</value>
+        </property>
+        <property name="searchSystemEnvironment">
+            <value>true</value>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders">
+            <value>true</value>
+        </property>
+    </bean>
+
+    <!-- 配置数据库源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="${VIPME_APP_DB_CLASS_NAME}"/>
+        <property name="url" value="${VIPME_APP_PUSH_DBURL}"/>
+        <property name="username" value="${VIPME_APP_PUSH_DBUSER}"/>
+        <property name="password" value="${VIPME_APP_PUSH_DBPASS}"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="maxTotal" value="100"/>
+        <property name="initialSize" value="1"/>
+        <property name="maxIdle" value="30"/>
+        <property name="minIdle" value="5"/>
+        <property name="maxWaitMillis" value="3000"/>
+    </bean>
+
+    <!-- 配置数据库引擎 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务管理注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 文件上传 -->
+    <bean id="multipartResolver" class="com.swy.server.utils.CustomCommonMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"></property>
+    </bean>
+
+    <!--指明 controller 所在包，并扫描其中的注解-->
+    <context:component-scan base-package="com.swy.server.controller"/>
+
+    <!-- 添加注解驱动 -->
+    <mvc:annotation-driven/>
+
+    <!-- 默认扫描的包路径 -->
+    <context:component-scan base-package="com.swy.server.controller"/>
+    <context:component-scan base-package="com.swy.server.bean"/>
+    <context:component-scan base-package="com.swy.server.service"/>
+    <context:component-scan base-package="com.swy.server.dao"/>
+    <context:component-scan base-package="com.swy.server.utils"/>
+    <context:component-scan base-package="com.swy.server.config"/>
+
+    <!-- 支持异步方法执行 -->
+    <task:annotation-driven/>
+
+    <!-- 控制器全局拦截器  -->
+    <mvc:interceptors>
+        <bean id="globalInterceptor" class="com.swy.server.interceptor.GlobalInterceptor"/>
+    </mvc:interceptors>
+
+    <!-- 资源文件 -->
+    <mvc:resources location="/WEB-INF/assets/" mapping="/assets/**"/>
+
+    <!--ViewResolver 视图解析器-->
+    <!--用于支持Servlet、JSP视图解析-->
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>

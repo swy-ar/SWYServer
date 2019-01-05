@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商家列表</title>
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../assets/jquery-easyui-1.5.4.2/demo/demo.css">
+    <script type="text/javascript" src="../assets/jquery-easyui-1.5.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/jquery-easyui-1.5.4.2/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../assets/common.js"></script>
+    <style type="text/css">
+        a {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    </style>
+</head>
+
+<div style="height: 44px;">
+    <a href="#" class="easyui-linkbutto3n" data-options="iconCls:'icon-add'">ADD</a>
+</div>
+<div id="table_datagrid"></div>
+<script type="text/javascript">
+    $('#table_datagrid').datagrid({
+        url: '/api/getAllSellers?',
+        method: 'GET',
+        pagination: true,
+        pageSize: 10,
+        pageList: [10, 20, 50],
+        singleSelect: true,
+        columns: [[
+            {field:"sellerId", title:"商家ID", width:120, align:'center'},
+            {field:"sellerName", title:"商家名称", width:150, align:'center'},
+            {field:"sellerDesc", title:"描述", width:240, align:'center'},
+            {field:"createTime", title:"创建时间", width:180, align:'center'},
+            {field:"isDisabel", title:"状态", width:120, align:'center', formatter:function(val, row, index) {
+                if (val == "1") {
+                    return "禁用";
+                }
+                return "正常";
+            }},
+            {field:"oper", title:"操作", width:150, align:'center', formatter:function(val, row, index) {
+                var html = "<a href='javascript:openDialog(" + row.sellerId + ")'>查看</a>";
+                html += "<a href='javascript:editSeller(" + row.sellerId + ")' classs='button-in-cell'>编辑</a>";
+                html += "<a href='javascript:deleteSeller(" + row.sellerId + ")' classs='button-in-cell'>删除</a>";
+                return html;
+            }},
+        ]],
+        loadFilter: function(data) {
+            var result = {};
+            result.total = 10;
+            result.rows = data.data.items;
+            return result;
+        }
+    });
+
+    function openDialog(sellerId) {
+        alert(sellerId);
+    };
+</script>
+</body>
+
+</html>

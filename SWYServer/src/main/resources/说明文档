@@ -1,0 +1,7 @@
+# 打包命令：
+# mvn clean install -Dmaven.test.skip=true
+
+# 生产机器 52.187.182.32
+# tomcat的war包路径 /usr/share/tomcat7/webapps
+# nginx
+# wsqroot/WandaS2ver0!
